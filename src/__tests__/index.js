@@ -28,6 +28,9 @@
 //   Test.fn (index.js:42:5)
 //
 /* eslint-enable max-len */
+//
+// Output is not super readable but AVA will improve that soon
+// https://github.com/sindresorhus/ava/issues/406
 
 import test from "ava"
 
