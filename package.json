@@ -1,0 +1,101 @@
+{
+  "name": "jsx-test-helpers",
+  "version": "1.0.0",
+  "description": "Helpers to easily write tests for React component/JSX code",
+  "keywords": [
+    "jsx",
+    "expect",
+    "expect",
+    "assert",
+    "assertion",
+    "ava",
+    "react",
+    "shallow rendering"
+  ],
+  "author": "Maxime Thirouin",
+  "license": "MIT",
+  "repository": "https://github.com/MoOx/jsx-test-helpers.git",
+  "#repositories": "https://github.com/npm/npm/issues/11315",
+  "repositories": [
+    "https://github.com/MoOx/jsx-test-helpers.git",
+    "https://gitlab.com/MoOx/jsx-test-helpers.git",
+    "https://bitbucket.org/MoOx/jsx-test-helpers.git"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src",
+    "!**/__tests__"
+  ],
+  "dependencies": {
+    "react-addons-test-utils": "^15.0.0",
+    "react-element-to-jsx-string": "^2.5.0"
+  },
+  "devDependencies": {
+    "ava": "^0.14.0",
+    "babel-cli": "^6.3.17",
+    "babel-core": "^6.3.26",
+    "babel-eslint": "^6.0.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-1": "^6.3.13",
+    "coveralls": "^2.11.9",
+    "eslint": "^2.0.0",
+    "eslint-config-i-am-meticulous": "^4.1.0",
+    "eslint-plugin-ava": "^2.0.1",
+    "eslint-plugin-flow-vars": "^0.3.0",
+    "eslint-plugin-react": "^4.0.0",
+    "flow-bin": "^0.22.1",
+    "npmpub": "^3.0.0",
+    "nyc": "^6.2.1",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0"
+  },
+  "scripts": {
+    "transpile": "babel --ignore __tests__ --copy-files src --out-dir lib",
+    "prepublish": "rimraf lib && npm -s run transpile",
+    "lint:js:eslint": "eslint --ignore-path .gitignore --fix .",
+    "lint:js:flow": "flow src",
+    "lint:js": "npm -s run lint:js:eslint && npm -s run lint:js:flow",
+    "lint": "npm -s run lint:js",
+    "tests": "ava",
+    "pretest": "npm -s run lint",
+    "test": "npm -s run tests",
+    "test-with-coverage": "nyc npm run test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "release": "npmpub"
+  },
+  "babel": {
+    "presets": [
+      "babel-preset-react",
+      "babel-preset-es2015",
+      "babel-preset-stage-1"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": [
+      "eslint-config-i-am-meticulous/react-flow",
+      "eslint-config-i-am-meticulous/ava"
+    ]
+  },
+  "ava": {
+    "files": [
+      "src/**/__tests__/*.js"
+    ],
+    "failFast": true,
+    "verbose": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
+  "nyc": {
+    "exclude": [
+      "**/__tests__/**"
+    ],
+    "include": [
+      "src/**"
+    ]
+  }
+}

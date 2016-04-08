@@ -1,0 +1,9 @@
+# Node.js / npm
+node_modules
+.log
+
+# build
+lib
+
+# code coverage
+.nyc_output
