@@ -5,9 +5,13 @@ export function noop() {}
 
 export const JSX = reactElementToJSXString
 
-export const render = (jsx, cb = noop) => {
+export const render = (jsx, cb = noop, context) => {
+  if (typeof cb === "object") {
+    context = cb
+    cb = noop
+  }
   const renderer = createRenderer()
-  const render = renderer.render(jsx)
+  const render = renderer.render(jsx, context)
 
   // here you can execute whatever you want on the renderer
   // eg: (render) => render.props.onClick({ preventDefault: noop })

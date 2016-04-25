@@ -1,8 +1,8 @@
 function FakeComponent() {}
 
-import React, { Component } from "react"
+import React, { Component, PropTypes } from "react"
 
-export default class ClassComponentToTest extends Component {
+class ClassComponentToTest extends Component {
   state = {
     clicked: false,
   };
@@ -14,16 +14,26 @@ export default class ClassComponentToTest extends Component {
   };
 
   render() {
-    const { props, state } = this
+    const { props, state, context } = this
     return (
-      <FakeComponent
-        fixedProp={ "some-value" }
-        onClick={ this.handleClick }
-        clicked={ state.clicked }
-        { ...props }
-      >
-        { props.children }
-      </FakeComponent>
+      !context.contextualValue
+      ? (
+        <FakeComponent
+          fixedProp={ "some-value" }
+          onClick={ this.handleClick }
+          clicked={ state.clicked }
+          { ...props }
+        >
+          { props.children }
+        </FakeComponent>
+      )
+      : <FakeComponent context />
     )
   }
 }
+
+ClassComponentToTest.contextTypes = {
+  contextualValue: PropTypes.string,
+}
+
+export default ClassComponentToTest

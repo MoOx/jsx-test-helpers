@@ -139,3 +139,22 @@ test("Can render & test a class handler on a child", (t) => {
   t.is(clicked, true)
   t.deepEqual(actual, expected)
 })
+
+// Context example
+test("Can render & test a class component with a context", (t) => {
+  const actual = renderJSX(
+    <ClassComponentToTest bool />,
+    {
+      contextualValue: "yes",
+    }
+  )
+
+  // not that the order of the props you expect and the one that are rendered
+  // does not matter, since the JSX method handle the order,
+  // thanks to react-element-to-jsx-string
+  const expected = JSX(
+    <FakeComponent context />
+  )
+
+  t.deepEqual(actual, expected)
+})
