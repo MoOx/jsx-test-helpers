@@ -10,7 +10,7 @@
 
 > Helpers to easily write tests for React component/JSX code
 
-This package [is very small](src/index.js) and provide simple helpers to easily use [React shallow rendering](http://facebook.github.io/react/docs/test-utils.html#shallow-rendering) method in conjonction with [react-element-to-jsx-string](https://github.com/algolia/react-element-to-jsx-string) to write straighforward tests for React component.
+This package [is very small](src/index.js) and provide simple helpers to easily use [React shallow rendering](http://facebook.github.io/react/docs/test-utils.html#shallow-rendering) method in conjunction with [react-element-to-jsx-string](https://github.com/algolia/react-element-to-jsx-string) to write straightforward tests for React component.
 
 **⚠️ [Be sure to read the test file, which is annotated](src/__tests__/index.js) 😙.**
 
