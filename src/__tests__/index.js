@@ -1,42 +1,6 @@
-//
-// Important note about how to place the renderJSX and JSX calls:
-//
-// Power Assert will help you for test failures in order to show you what is in
-// each variable or function calls
-//
-// Until power-assert handle JSX correctly, we must use variables instead
-// of using JSX directly in the t.deepEqual assertion
-//
-//      https://github.com/power-assert-js/power-assert/issues/34
-//
-// Currently here is what you will get with a failures
-//
-/* eslint-disable max-len */
-//
-// ✔ Can render & test a functional component
-// ✖ Can render & test a class component
-// t.same(actual, expected)
-//        |       |
-//        |       "<FakeComponent\n  bool={true}\n  fixedProp=\"some-value\"\n  onClick={function noRefCheck() {}}\n/>"
-//        "<FakeComponent\n  bool={true}\n  clicked={false}\n  fixedProp=\"some-value\"\n  onClick={function noRefCheck() {}}\n/>"
-//
-//
-// 1 test failed
-//
-// 1. Can render & test a class component
-// AssertionError: '<FakeComponent\n  bool={true}\n  clicked={false}\n  fixedProp="some-value"\n  onClick={function noRefCheck() {}}\n/>' === '<FakeComponent\n  bool={true}\n  fixedProp="some-value"\n  onClick={function noRefCheck() {}}\n/>'
-//   Test.fn (index.js:42:5)
-//
-/* eslint-enable max-len */
-//
-// Output is not super readable but AVA will improve that soon
-// https://github.com/sindresorhus/ava/issues/406
+import React from "react";
 
-import test from "ava"
-
-import React from "react"
-
-import { noop, renderJSX, JSX } from "../index.js"
+import { noop, renderJSX, JSX } from "../index.js";
 
 // Two important things I want to highlight here
 //
@@ -49,112 +13,75 @@ import { noop, renderJSX, JSX } from "../index.js"
 // 2. It's important to use a real function here, and not an arrow function
 // This is to ensure that function is named, so React will use the name as
 // the component name for the shallow rendering (and so the actual rendering)
+import FunctionalComponentToTest from "./__fixtures__/fn.js";
+import ClassComponentToTest from "./__fixtures__/class.js";
+
 function FakeComponent() {}
 
-import FunctionalComponentToTest from "./fixtures/fn.js"
-import ClassComponentToTest from "./fixtures/class.js"
+test("Can render & test a functional component", () => {
+  expect(renderJSX(<FunctionalComponentToTest bool />)).toMatch(
+    JSX(<FakeComponent fixedProp={"some-value"} bool />)
+  );
+});
 
-test("Can render & test a functional component", (t) => {
-  const actual = renderJSX(
-    <FunctionalComponentToTest bool />
-  )
-  const expected = JSX(
-    <FakeComponent
-      fixedProp={ "some-value" }
-      bool
-    />
-  )
+// Note that the order of the props you expect and the one that are rendered
+// does not matter, since the JSX method handle the order,
+// thanks to react-element-to-jsx-string
+test("Can render & test a class component", () => {
+  expect(renderJSX(<ClassComponentToTest bool />)).toMatch(
+    JSX(
+      <FakeComponent
+        onClick={noop}
+        clicked={false}
+        bool
+        fixedProp={"some-value"}
+      />
+    )
+  );
+});
 
-  t.deepEqual(actual, expected)
-})
+// I think it's interesting here to have to mock an event.
+// This way your tests will explicitely contain what event properties you
+// are using.
+test("Can render & test a class component with a state and an event", () => {
+  expect(
+    renderJSX(<ClassComponentToTest bool />, render =>
+      render.props.onClick({ preventDefault: noop })
+    )
+  ).toMatch(
+    JSX(<FakeComponent fixedProp={"some-value"} onClick={noop} clicked bool />)
+  );
+});
 
-test("Can render & test a class component", (t) => {
-  const actual = renderJSX(
-    <ClassComponentToTest bool />
-  )
+test("Can render & test a class handler on a child", () => {
+  let clicked = false;
+  const click = () => (clicked = true);
 
-  // not that the order of the props you expect and the one that are rendered
-  // does not matter, since the JSX method handle the order,
-  // thanks to react-element-to-jsx-string
-  const expected = JSX(
-    <FakeComponent
-      onClick={ noop }
-      clicked={ false }
-      bool
-      fixedProp={ "some-value" }
-    />
-  )
-
-  t.deepEqual(actual, expected)
-})
-
-test("Can render & test a class component with a state and an event", (t) => {
-  const actual = renderJSX(
-    <ClassComponentToTest bool />,
-
-    // I think it's interesting here to have to mock an event.
-    // This way your tests will explicitely contain what event properties you
-    // are using.
-    (render) => render.props.onClick({ preventDefault: noop })
-  )
-  const expected = JSX(
-    <FakeComponent
-      fixedProp={ "some-value" }
-      onClick={ noop }
-      clicked
-      bool
-    />
-  )
-
-  t.deepEqual(actual, expected)
-})
-
-test("Can render & test a class handler on a child", (t) => {
-  let clicked = false
-  const click = () => {
-    clicked = true
-  }
-
-  const child = <div onClick={ click }>{ "ClickMe" }</div>
-  const actual = renderJSX(
-    <ClassComponentToTest>
-      { child }
-    </ClassComponentToTest>,
-
-    (render) => {
-      render.props.children.props.onClick()
-    }
-  )
-
-  const expected = JSX(
-    <FakeComponent
-      fixedProp={ "some-value" }
-      onClick={ noop }
-      clicked={ false }
-    >
-      { child }
-    </FakeComponent>
-  )
-
-  t.is(clicked, true)
-  t.deepEqual(actual, expected)
-})
+  const child = <div onClick={click}>{"ClickMe"}</div>;
+  expect(
+    renderJSX(
+      <ClassComponentToTest>
+        {child}
+      </ClassComponentToTest>,
+      render => {
+        render.props.children.props.onClick();
+      }
+    )
+  ).toMatch(
+    JSX(
+      <FakeComponent fixedProp={"some-value"} onClick={noop} clicked={false}>
+        {child}
+      </FakeComponent>
+    )
+  );
+  expect(clicked).toBe(true);
+});
 
 // Context example
-test("Can render & test a class component with a context", (t) => {
-  const actual = renderJSX(
-    <ClassComponentToTest bool />,
-    {
-      contextualValue: "yes",
-    }
-  )
-
-  // not that the order of the props you expect and the one that are rendered
-  // does not matter, since the JSX method handle the order,
-  // thanks to react-element-to-jsx-string
-  const expected = JSX(
-    <FakeComponent context />
-  )
-
-  t.deepEqual(actual, expected)
-})
+test("Can render & test a class component with a context", () => {
+  expect(
+    renderJSX(<ClassComponentToTest bool />, {
+      contextualValue: "yes"
+    })
+  ).toMatch(JSX(<FakeComponent context />));
+});

@@ -6,4 +6,4 @@ node_modules
 lib
 
 # code coverage
-.nyc_output
+coverage

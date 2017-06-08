@@ -1,7 +1,6 @@
 # jsx-test-helpers
 
 [![Unix Build status](https://img.shields.io/travis/MoOx/jsx-test-helpers/master.svg?branch=master&label=unix%20build)](https://travis-ci.org/MoOx/jsx-test-helpers)
-[![Code Coverage](https://img.shields.io/coveralls/MoOx/jsx-test-helpers/master.svg)](https://coveralls.io/github/MoOx/jsx-test-helpers)
 [![Version](https://img.shields.io/npm/v/jsx-test-helpers.svg)](https://github.com/MoOx/jsx-test-helpers/blob/master/CHANGELOG.md)
 
 [![Repo on GitHub](https://img.shields.io/badge/repo-GitHub-3D76C2.svg)](https://github.com/MoOx/jsx-test-helpers)
@@ -24,30 +23,22 @@ $ npm install jsx-test-helpers
 
 **⚠️ [Be sure to read the test file, which have more complete annotated examples](src/__tests__/index.js).**
 
-Example with [AVA](https://github.com/sindresorhus/ava):
+Example with [Jest](http://facebook.github.io/jest/):
 
 ```js
-import test from "ava"
-import React from "react"
-import { noop, renderJSX, JSX } from "jsx-test-helpers"
+import React from 'react';
+import { noop, renderJSX, JSX } from 'jsx-test-helpers';
 
-import FunctionalComponentToTest from "../your-component"
+import FunctionalComponentToTest from '../your-component';
 
-function FakeComponent() {} // fixture
+// fixture
+function FakeComponent() {}
 
-test("Can render & test a functional component", (t) => {
-  const actual = renderJSX(
-    <FunctionalComponentToTest bool />
-  )
-  const expected = JSX(
-    <FakeComponent
-      fixedProp={ "some-value" }
-      bool
-    />
-  )
-
-  t.deepEqual(actual, expected)
-})
+test('Can render & test a functional component', () => {
+  expected(renderJSX(<FunctionalComponentToTest bool />)).toMatch(
+    JSX(<FakeComponent fixedProp={'some-value'} bool />)
+  );
+});
 ```
 
 ---

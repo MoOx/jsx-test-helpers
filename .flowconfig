@@ -1,15 +1,19 @@
+[version]
+^0.47.0
+
 [ignore]
 .*/node_modules/.*
 .*/lib/.*
-.*/.nyc_output/.*
+.*/coverage/.*
 .*/__tests__/.*
 
 [include]
 node_modules
 
 [libs]
-interfaces
+flow
 
 [options]
+all=true
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
