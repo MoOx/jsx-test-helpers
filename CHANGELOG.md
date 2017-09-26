@@ -1,3 +1,7 @@
+# 3.0.0 - 2017-09-26
+
+- React 16 support
+
 # 2.0.0 - 2017-06-08
 
 - Upgrade `react-element-to-jsx-string` to ^10.0.0
